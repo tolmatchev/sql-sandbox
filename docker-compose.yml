@@ -12,6 +12,20 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    mem_limit: 1g
+    cpus: 0.5
+    shm_size: 128mb
+    command: >
+      postgres
+      -c shared_buffers=256MB
+      -c effective_cache_size=512MB
+      -c work_mem=8MB
+      -c maintenance_work_mem=64MB
+      -c max_parallel_workers=4
+      -c max_parallel_workers_per_gather=2
+      -c random_page_cost=2.0
+      -c effective_io_concurrency=2
+      -c log_min_duration_statement=0
 
 volumes:
   pgdata:

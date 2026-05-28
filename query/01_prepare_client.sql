@@ -1,3 +1,4 @@
+\timing on
 DROP TABLE IF EXISTS client;
 
 CREATE TABLE client (
@@ -19,8 +20,6 @@ CREATE TABLE client (
 -- Включаем расширение для генерации UUID
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
-\timing on
-
 INSERT INTO client (
     external_id,
     first_name,
@@ -36,7 +35,7 @@ INSERT INTO client (
 )
 SELECT
     gen_random_uuid()                                    AS external_id,
-    'FirstName_' || gs                                   AS first_name,
+    substring(md5(random()::text), 1, 8)                 AS first_name,
     'LastName_' || gs                                    AS last_name,
     CASE
         WHEN random() < 0.7 THEN 'MiddleName_' || gs
@@ -54,4 +53,32 @@ SELECT
     random() < 0.6                                       AS is_verified,
     now() - (random() * interval '5 years')              AS created_at,
     now() - (random() * interval '5 years')              AS updated_at
-FROM generate_series(1, 1000000) gs;
+FROM generate_series(1, 10000000) gs;
+
+
+INSERT INTO client (
+    external_id,
+    first_name,
+    last_name,
+    middle_name,
+    email,
+    phone,
+    birth_date,
+    status,
+    is_verified,
+    created_at,
+    updated_at
+)
+VALUES (
+    gen_random_uuid(),
+    'tolmachev1',
+    'Nikita1',
+    'MiddleName_1',
+    'user1@example.com',
+    '+79993453278',
+    DATE '1985-06-15',
+    'active',
+    true,
+    now(),
+    now()
+);
